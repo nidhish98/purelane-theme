@@ -1,0 +1,156 @@
+{%- comment -%}
+  Footer. Brand column from section settings; link lists / text / contact
+  columns from blocks so merchants can add, remove and reorder freely.
+{%- endcomment -%}
+<footer class="pl-footer">
+  <div class="wrap">
+    <div class="fgrid">
+      <div class="fcol">
+        <a class="brand" href="{{ routes.root_url }}" style="margin-bottom:16px" aria-label="{{ 'general.menu' | t }} — {{ section.settings.brand_name | default: shop.name | escape }}">
+          <span class="mark">
+            {% render 'icon', icon: 'leaf-stem', size: 23, stroke: 1.5 %}
+          </span>
+          <span class="txt">
+            <span class="n1">{{ section.settings.brand_name | default: shop.name | escape }}</span>
+            <span class="n2">{{ section.settings.brand_tagline | escape }}</span>
+          </span>
+        </a>
+        {%- if section.settings.brand_text != blank -%}
+          <p style="max-width:30ch">{{ section.settings.brand_text | escape }}</p>
+        {%- endif -%}
+      </div>
+
+      {%- for block in section.blocks -%}
+        <div class="fcol" {{ block.shopify_attributes }}>
+          {%- case block.type -%}
+            {%- when 'link_list' -%}
+              {%- if block.settings.heading != blank -%}<h5>{{ block.settings.heading | escape }}</h5>{%- endif -%}
+              {%- if block.settings.menu != blank -%}
+                {%- for link in block.settings.menu.links -%}
+                  <a href="{{ link.url }}">{{ link.title | escape }}</a>
+                {%- endfor -%}
+              {%- endif -%}
+            {%- when 'text' -%}
+              {%- if block.settings.heading != blank -%}<h5>{{ block.settings.heading | escape }}</h5>{%- endif -%}
+              {%- if block.settings.text != blank -%}<p>{{ block.settings.text | escape | newline_to_br }}</p>{%- endif -%}
+            {%- when 'contact' -%}
+              {%- if block.settings.heading != blank -%}<h5>{{ block.settings.heading | escape }}</h5>{%- endif -%}
+              {%- if block.settings.email != blank -%}<a href="mailto:{{ block.settings.email | escape }}">{{ block.settings.email | escape }}</a>{%- endif -%}
+              {%- if block.settings.phone != blank -%}<a href="tel:{{ block.settings.phone | remove: ' ' | remove: '(' | remove: ')' | remove: '-' }}">{{ block.settings.phone | escape }}</a>{%- endif -%}
+              {%- if block.settings.note != blank -%}<p style="font-size:12px;color:rgba(36,26,61,.5)">{{ block.settings.note | escape }}</p>{%- endif -%}
+          {%- endcase -%}
+        </div>
+      {%- endfor -%}
+    </div>
+
+    <div class="fbot">
+      <span>&#169; {{ 'now' | date: '%Y' }} {{ section.settings.copyright_text | default: shop.name | escape }}</span>
+      <span>{{ section.settings.legal_text | escape }}</span>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "tag": "section",
+  "class": "shopify-section-footer",
+  "settings": [
+    {
+      "type": "text",
+      "id": "brand_name",
+      "label": "Brand name",
+      "info": "Defaults to your store name when left empty."
+    },
+    {
+      "type": "text",
+      "id": "brand_tagline",
+      "label": "Brand tagline",
+      "default": "Clean, simply"
+    },
+    {
+      "type": "textarea",
+      "id": "brand_text",
+      "label": "Brand description",
+      "default": "Effective cleaning, powered by nature. Made for Indian homes since day one."
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Copyright text",
+      "default": "Purelane Eco Products Private Limited"
+    },
+    {
+      "type": "text",
+      "id": "legal_text",
+      "label": "Legal links",
+      "default": "Privacy · Terms · Refunds · Contact"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "link_list",
+      "name": "Link list",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Shop"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Text",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text"
+        }
+      ]
+    },
+    {
+      "type": "contact",
+      "name": "Contact",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Get in touch"
+        },
+        {
+          "type": "text",
+          "id": "email",
+          "label": "Email"
+        },
+        {
+          "type": "text",
+          "id": "phone",
+          "label": "Phone"
+        },
+        {
+          "type": "text",
+          "id": "note",
+          "label": "Note"
+        }
+      ]
+    }
+  ],
+  "enabled_on": {
+    "groups": ["footer"]
+  }
+}
+{% endschema %}

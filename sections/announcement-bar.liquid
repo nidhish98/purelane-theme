@@ -1,0 +1,64 @@
+{%- comment -%}
+  Announcement bar — the prototype's scrolling ticker.
+  Blocks hold one announcement each: plain text + an emphasised word.
+  Content is rendered twice so the CSS loop translateX(-50%) is seamless.
+{%- endcomment -%}
+{%- if section.blocks.size > 0 -%}
+  <div class="ticker" role="region" aria-label="{{ section.settings.accessibility_label | escape }}">
+    <div class="track">
+      {%- for block in section.blocks -%}
+        <span>
+          {{ block.settings.text | escape }}
+          {%- if block.settings.highlight != blank -%} <b>{{ block.settings.highlight | escape }}</b>{%- endif -%}
+        </span>
+      {%- endfor -%}
+      {%- for block in section.blocks -%}
+        <span aria-hidden="true">
+          {{ block.settings.text | escape }}
+          {%- if block.settings.highlight != blank -%} <b>{{ block.settings.highlight | escape }}</b>{%- endif -%}
+        </span>
+      {%- endfor -%}
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Announcement bar",
+  "tag": "section",
+  "class": "shopify-section-announcement",
+  "settings": [
+    {
+      "type": "text",
+      "id": "accessibility_label",
+      "label": "Accessibility label for the bar",
+      "default": "Announcements"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "announcement",
+      "name": "Announcement",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Free shipping"
+        },
+        {
+          "type": "text",
+          "id": "highlight",
+          "label": "Emphasised word",
+          "info": "Shown in green.",
+          "default": "on every bundle across India"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "enabled_on": {
+    "groups": ["header"]
+  }
+}
+{% endschema %}

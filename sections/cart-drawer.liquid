@@ -1,0 +1,47 @@
+{%- comment -%}
+  Slide-in cart drawer, rendered as part of the header group.
+  Line items are rendered client-side from the AJAX cart API.
+{%- endcomment -%}
+<cart-drawer class="pl-cart-drawer" data-cart-drawer aria-hidden="true">
+  <div class="cd-head">
+    <h3>{{ 'cart.title' | t }}</h3>
+    <button class="ico" type="button" data-cart-close aria-label="{{ 'accessibility.close_cart' | t }}">
+      {% render 'icon', icon: 'close', size: 16, stroke: 1.8 %}
+    </button>
+  </div>
+
+  <div class="cd-body">
+    <div class="cd-empty" data-cart-empty>
+      {% render 'icon', icon: 'leaf', size: 44 %}
+      <p>{{ 'cart.empty' | t }}</p>
+    </div>
+    <div data-cart-body></div>
+  </div>
+
+  <div class="cd-foot" data-cart-foot hidden>
+    <div class="cd-errors" data-cart-errors hidden></div>
+    <div class="cd-subtotal">
+      <span>{{ 'cart.subtotal' | t }}</span>
+      <b data-cart-subtotal></b>
+    </div>
+    <a class="btn btn-primary cd-checkout" href="/checkout">{{ 'cart.checkout' | t }}</a>
+    <p class="cd-note">{{ 'cart.note' | t }}</p>
+  </div>
+</cart-drawer>
+
+{% schema %}
+{
+  "name": "Cart drawer",
+  "tag": "section",
+  "class": "shopify-section-cart-drawer",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Slide-in cart used by the header cart icon and all 'Add to cart' buttons. Line items, quantities and totals update automatically."
+    }
+  ],
+  "enabled_on": {
+    "groups": ["header"]
+  }
+}
+{% endschema %}

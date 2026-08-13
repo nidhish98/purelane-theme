@@ -1,0 +1,49 @@
+{%- comment -%}
+  STICKY CTA (secondary). Fixed bottom bar shown on mobile only, matching
+  the prototype's "Pick any 3, pay ₹499" bar. Fully merchant-editable.
+{%- endcomment -%}
+{%- if section.settings.button_label != blank -%}
+  <div class="pl-sticky">
+    <span class="lbl">
+      {%- if section.settings.title != blank -%}<b>{{ section.settings.title | escape }}</b>{%- endif -%}
+      {%- if section.settings.subtitle != blank -%}<span>{{ section.settings.subtitle | escape }}</span>{%- endif -%}
+    </span>
+    <a class="btn btn-primary btn-sm" href="{{ section.settings.button_link }}">{{ section.settings.button_label | escape }}</a>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Sticky bar",
+  "tag": "section",
+  "class": "shopify-section-sticky-cta",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Pick any 3, pay ₹499"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Free shipping, always"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Build bundle"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    }
+  ]
+}
+{% endschema %}

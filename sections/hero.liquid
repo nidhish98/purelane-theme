@@ -1,0 +1,302 @@
+{%- comment -%}
+  HERO (priority section 1).
+  Layout reproduced from the prototype: full-height brand scene, copy
+  block with headline / lede / CTAs, a floating badge rail (desktop) and
+  an interactive product stage whose slides cycle 1 → 2 → 3 products.
+  All copy, badges, prices and products are merchant-editable blocks.
+{%- endcomment -%}
+{%- liquid
+  assign heading_lines = section.settings.heading | escape | newline_to_br | split: '<br />'
+-%}
+<section
+  id="{{ section.settings.anchor_id | escape }}"
+  class="hero"
+  data-scene="{{ section.settings.scene | default: 1 }}"
+  data-pl-module="hero"
+>
+  <div class="hero-grid">
+
+    {%- comment -%} Desktop badge rail (hidden below 900px) {%- endcomment -%}
+    {%- if section.blocks.size > 0 -%}
+      <div class="badges glass-2" aria-label="{{ section.settings.badges_label | escape }}">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'badge' -%}
+            <div class="badge" {{ block.shopify_attributes }}>
+              <span class="bi">{% render 'icon', icon: block.settings.icon, size: 19, stroke: 1.6 %}</span>
+              <span>{{ block.settings.text | escape | newline_to_br }}</span>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    <div class="hero-copy">
+      <h1 class="d1 rv in">
+        {%- for line in heading_lines -%}
+          {%- if forloop.last -%}<span class="lime">{{ line }}</span>{%- else -%}{{ line }}<br>{%- endif -%}
+        {%- endfor -%}
+      </h1>
+
+      <div class="rule rv rv-d1">
+        <i></i>
+        {% render 'icon', icon: 'leaf', size: 16, stroke: 1.6 %}
+        <i></i>
+      </div>
+
+      {%- if section.settings.lede != blank -%}
+        <p class="lede rv rv-d2">{{ section.settings.lede | escape }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.primary_button_label != blank or section.settings.secondary_button_label != blank -%}
+        <div class="hero-cta rv rv-d3">
+          {%- if section.settings.primary_button_label != blank -%}
+            <a class="btn btn-primary" href="{{ section.settings.primary_button_link }}">
+              {{ section.settings.primary_button_label | escape }}
+              {% render 'icon', icon: 'arrow', size: 15, stroke: 2.2 %}
+            </a>
+          {%- endif -%}
+          {%- if section.settings.secondary_button_label != blank -%}
+            <a class="btn btn-ghost" href="{{ section.settings.secondary_button_link }}">{{ section.settings.secondary_button_label | escape }}</a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} Mobile badge strip (hidden above 900px) {%- endcomment -%}
+      {%- if section.blocks.size > 0 -%}
+        <div class="badgestrip rv rv-d4">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'badge' -%}
+              <div class="glass-2">
+                {% render 'icon', icon: block.settings.icon, size: 18, stroke: 1.6 %}
+                {{ block.settings.text | escape | newline_to_br }}
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Product stage: one block per slide, 1–3 products each {%- endcomment -%}
+    {%- assign slide_count = 0 -%}
+    {%- for block in section.blocks -%}{% if block.type == 'slide' %}{% assign slide_count = slide_count | plus: 1 %}{% endif %}{% endfor -%}
+    {%- if slide_count > 0 -%}
+      <div class="hero-prod" data-hero-prod>
+        <div class="hstage" data-hero-stage>
+          {%- assign slide_idx = 0 -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'slide' -%}
+              {%- assign slide_idx = slide_idx | plus: 1 -%}
+              {%- liquid
+                assign p1 = block.settings.product_1
+                assign p2 = block.settings.product_2
+                assign p3 = block.settings.product_3
+                assign n = 0
+                if p1 != blank %}{% assign n = n | plus: 1 %}{% endif
+                if p2 != blank %}{% assign n = n | plus: 1 %}{% endif
+                if p3 != blank %}{% assign n = n | plus: 1 %}{% endif
+                assign slide_price = block.settings.price
+                assign slide_compare = block.settings.compare_at_price
+                if slide_price == blank and n == 1 and p1 != blank
+                  assign slide_price = p1.price | money
+                  if p1.compare_at_price and p1.compare_at_price > p1.price
+                    assign slide_compare = p1.compare_at_price | money
+                  endif
+                endif
+              -%}
+              <div class="hslide hs{{ n }}{% if slide_idx == 1 %} on{% endif %}" data-n="{{ slide_idx }}"{% if slide_idx == 1 %} aria-hidden="false"{% else %} aria-hidden="true"{% endif %}>
+                {%- if p1 -%}
+                  {%- if p1.featured_image -%}
+                    <img class="hp a d1" src="{{ p1.featured_image | image_url: width: 440 }}" alt="{{ p1.featured_image.alt | default: p1.title | escape }}" {% if slide_idx == 1 %}loading="eager"{% else %}loading="lazy"{% endif %}>
+                  {%- else -%}
+                    <span class="hp hp-tile a">{% render 'icon', icon: 'leaf', size: 30 %}</span>
+                  {%- endif -%}
+                {%- endif -%}
+                {%- if p2 -%}
+                  {%- if p2.featured_image -%}
+                    <img class="hp b d2" src="{{ p2.featured_image | image_url: width: 440 }}" alt="{{ p2.featured_image.alt | default: p2.title | escape }}" loading="lazy">
+                  {%- else -%}
+                    <span class="hp hp-tile b">{% render 'icon', icon: 'leaf', size: 30 %}</span>
+                  {%- endif -%}
+                {%- endif -%}
+                {%- if p3 -%}
+                  {%- if p3.featured_image -%}
+                    <img class="hp c d3" src="{{ p3.featured_image | image_url: width: 440 }}" alt="{{ p3.featured_image.alt | default: p3.title | escape }}" loading="lazy">
+                  {%- else -%}
+                    <span class="hp hp-tile c">{% render 'icon', icon: 'leaf', size: 30 %}</span>
+                  {%- endif -%}
+                {%- endif -%}
+                <div class="glass-2 ptag">
+                  <span class="lbl">{{ block.settings.label | escape }}</span>
+                  <span class="val"><strong>{{ slide_price }}</strong>{% if slide_compare != blank %}<s>{{ slide_compare }}</s>{% endif %}</span>
+                  {%- if block.settings.cut_label != blank -%}
+                    <span class="cut">{{ block.settings.cut_label | escape }}</span>
+                  {%- endif -%}
+                </div>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+        <div class="hdots">
+          {%- assign dot_idx = 0 -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'slide' -%}
+              {%- assign dot_idx = dot_idx | plus: 1 -%}
+              <button type="button" class="{% if dot_idx == 1 %}on{% endif %}" data-hero-dot aria-label="Show {{ block.settings.label | default: dot_idx | escape }}"></button>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero",
+  "tag": "section",
+  "class": "shopify-section-hero",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "anchor_id",
+      "label": "Anchor id",
+      "info": "Short id so one-page links such as #shop can target this section.",
+      "default": "top"
+    },
+    {
+      "type": "select",
+      "id": "scene",
+      "label": "Background scene",
+      "options": [
+        { "value": "1", "label": "1 — lightest" },
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4 — deepest" }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Headline",
+      "info": "One line per row. The last line is shown in the accent colour.",
+      "default": "Clean\nThat\nLasts"
+    },
+    {
+      "type": "textarea",
+      "id": "lede",
+      "label": "Supporting text",
+      "default": "Homecare that works on the toughest grime, made from plants. Kind to your home, your family and the world outside it."
+    },
+    {
+      "type": "text",
+      "id": "primary_button_label",
+      "label": "Primary button label",
+      "default": "Shop now"
+    },
+    {
+      "type": "url",
+      "id": "primary_button_link",
+      "label": "Primary button link"
+    },
+    {
+      "type": "text",
+      "id": "secondary_button_label",
+      "label": "Secondary button label",
+      "default": "How it works"
+    },
+    {
+      "type": "url",
+      "id": "secondary_button_link",
+      "label": "Secondary button link"
+    },
+    {
+      "type": "text",
+      "id": "badges_label",
+      "label": "Badges accessibility label",
+      "default": "Product promises"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "badge",
+      "name": "Badge",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "leaf", "label": "Leaf" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "ban", "label": "Ban / no chemicals" },
+            { "value": "heart", "label": "Heart" },
+            { "value": "bubbles", "label": "Bubbles" },
+            { "value": "box", "label": "Box" },
+            { "value": "check-square", "label": "Check square" },
+            { "value": "star", "label": "Star" },
+            { "value": "globe", "label": "Globe" }
+          ],
+          "default": "leaf"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text",
+          "info": "One line per row.",
+          "default": "Plant\npowered"
+        }
+      ]
+    },
+    {
+      "type": "slide",
+      "name": "Product slide",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Offer label",
+          "default": "Single bottle"
+        },
+        {
+          "type": "text",
+          "id": "price",
+          "label": "Price",
+          "info": "Leave empty with a single product selected to use the product's real price and compare-at price."
+        },
+        {
+          "type": "text",
+          "id": "compare_at_price",
+          "label": "Compare-at price"
+        },
+        {
+          "type": "text",
+          "id": "cut_label",
+          "label": "Discount pill",
+          "default": "33% off"
+        },
+        {
+          "type": "product",
+          "id": "product_1",
+          "label": "Product 1"
+        },
+        {
+          "type": "product",
+          "id": "product_2",
+          "label": "Product 2"
+        },
+        {
+          "type": "product",
+          "id": "product_3",
+          "label": "Product 3"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

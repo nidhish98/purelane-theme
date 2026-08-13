@@ -1,0 +1,26 @@
+{%- comment -%}
+  MAIN PAGE (page template). Simple on-brand article layout.
+{%- endcomment -%}
+<section class="pl-page sec" data-scene="2">
+  <div class="wrap">
+    <div class="glass sec-pad">
+      <nav class="pl-breadcrumb" aria-label="Breadcrumb">
+        <a href="{{ routes.root_url }}">{{ 'general.breadcrumbs.home' | t }}</a>
+        <span aria-hidden="true">/</span>
+        <b aria-current="page">{{ page.title }}</b>
+      </nav>
+      <h1 class="d2" style="margin-top:16px">{{ page.title }}</h1>
+      {%- if page.content != blank -%}
+        <div class="pl-desc rte">{{ page.content }}</div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Main page",
+  "tag": "section",
+  "class": "shopify-section-main-page"
+}
+{% endschema %}

@@ -1,0 +1,52 @@
+{%- comment -%}
+  PROGRESS RAIL (secondary). Desktop-only fixed rail of section dots.
+  Each block is one destination; the active dot is synced on scroll by
+  global.js (position based, so reordering sections is safe).
+{%- endcomment -%}
+{%- if section.blocks.size > 0 -%}
+  <nav class="rail" aria-label="{{ section.settings.label | escape }}" data-pl-module="progress_rail">
+    {%- for block in section.blocks -%}
+      <a href="{{ block.settings.link }}" aria-label="{{ block.settings.label | escape }}"{% if forloop.first %} class="on"{% endif %} {{ block.shopify_attributes }}></a>
+    {%- endfor -%}
+  </nav>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Progress rail",
+  "tag": "section",
+  "class": "shopify-section-progress-rail",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Rail accessibility label",
+      "default": "Section progress"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "link",
+      "name": "Destination",
+      "limit": 10,
+      "settings": [
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link",
+          "info": "Use a section anchor such as #shop."
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Section"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

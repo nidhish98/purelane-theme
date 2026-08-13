@@ -1,0 +1,125 @@
+{%- comment -%}
+  PRODUCT GRID — "Shop / Bestsellers" (priority section 2).
+  Products, names, prices, availability and images all come from a Shopify
+  collection; the merchant only picks the collection and the copy.
+{%- endcomment -%}
+{%- liquid
+  assign collection = section.settings.collection
+  assign limit = section.settings.products_to_show | default: 8
+-%}
+<section id="{{ section.settings.anchor_id | escape }}" class="sec" data-scene="{{ section.settings.scene | default: 3 }}">
+  <div class="wrap">
+    {% render 'section-heading',
+      kicker: section.settings.kicker,
+      heading: section.settings.heading,
+      lede: section.settings.lede
+    %}
+
+    {%- if collection != blank and collection.products.size > 0 -%}
+      <div class="shelf">
+        {%- for product in collection.products limit: limit -%}
+          {%- assign d = forloop.index0 | modulo: 4 | plus: 1 -%}
+          {% render 'product-card', product: product, delay: d %}
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <div class="shelf pl-shelf-placeholder">
+        {%- for i in (1..4) -%}
+          <article class="glass card pl-card rv in">
+            <span class="shot">
+              <span class="pl-ph">
+                {% render 'icon', icon: 'leaf', size: 56 %}
+                <span>{{ 'collections.general.empty' | t }}</span>
+              </span>
+            </span>
+            <h4>&nbsp;</h4>
+          </article>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.show_button and collection != blank -%}
+      <div style="text-align:center;margin-top:26px">
+        <a class="btn btn-ghost" href="{{ collection.url }}">
+          {{ section.settings.button_label | escape }}
+          {% render 'icon', icon: 'arrow', size: 15, stroke: 2.2 %}
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Product grid",
+  "tag": "section",
+  "class": "shopify-section-product-grid",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "anchor_id",
+      "label": "Anchor id",
+      "default": "shop"
+    },
+    {
+      "type": "select",
+      "id": "scene",
+      "label": "Background scene",
+      "options": [
+        { "value": "1", "label": "1 — lightest" },
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4 — deepest" }
+      ],
+      "default": "3"
+    },
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Kicker",
+      "default": "Bestsellers"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Loved by 30,000 homes"
+    },
+    {
+      "type": "textarea",
+      "id": "lede",
+      "label": "Supporting text",
+      "info": "Optional."
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 4,
+      "max": 12,
+      "step": 1,
+      "label": "Products to show",
+      "default": 8
+    },
+    {
+      "type": "checkbox",
+      "id": "show_button",
+      "label": "Show 'View all' button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "View all"
+    }
+  ]
+}
+{% endschema %}

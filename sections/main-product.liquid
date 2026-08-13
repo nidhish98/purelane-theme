@@ -1,0 +1,158 @@
+{%- comment -%}
+  MAIN PRODUCT (product page template).
+  Functional but on-brand: breadcrumb, image, title, price, description,
+  variant select, quantity stepper, add-to-cart, reassurance icons and a
+  mobile sticky buy bar. Uses the shared AJAX add-to-cart so the cart
+  drawer opens.
+{%- endcomment -%}
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+{%- liquid
+  assign save_pct = ''
+  if current_variant.compare_at_price and current_variant.compare_at_price > current_variant.price
+    assign save_pct = current_variant.compare_at_price | minus: current_variant.price | times: 100.0 | divided_by: current_variant.compare_at_price | round
+  endif
+-%}
+<section class="pl-page sec" data-scene="1" data-pl-module="product">
+  <div class="wrap">
+    <nav class="pl-breadcrumb" aria-label="Breadcrumb">
+      <a href="{{ routes.root_url }}">{{ 'general.breadcrumbs.home' | t }}</a>
+      {%- if collection -%}
+        <span aria-hidden="true">/</span>
+        <a href="{{ collection.url }}">{{ collection.title }}</a>
+      {%- endif -%}
+      <span aria-hidden="true">/</span>
+      <b aria-current="page">{{ product.title }}</b>
+    </nav>
+
+    <div class="glass pl-product">
+      <div class="pl-gallery">
+        {%- if product.featured_image -%}
+          <img src="{{ product.featured_image | image_url: width: 900 }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" width="900" height="{{ 900 | divided_by: product.featured_image.aspect_ratio | round }}">
+        {%- else -%}
+          <div class="tile tile-lg">{% render 'icon', icon: 'leaf', size: 48 %}</div>
+        {%- endif -%}
+      </div>
+
+      <div class="pl-info">
+        <h1 class="d3">{{ product.title }}</h1>
+
+        <div class="pl-price">
+          <strong data-product-price>{{ current_variant.price | money }}</strong>
+          {%- if current_variant.compare_at_price and current_variant.compare_at_price > current_variant.price -%}
+            <s data-product-compare>{{ current_variant.compare_at_price | money }}</s>
+            <em data-product-save>{{ 'products.product.save_on' | t }} {{ save_pct }}%</em>
+          {%- else -%}
+            <s data-product-compare style="display:none"></s>
+          {%- endif -%}
+        </div>
+
+        {%- if product.description != blank -%}
+          <div class="pl-desc rte">{{ product.description }}</div>
+        {%- endif -%}
+
+        {%- form 'product', product, class: 'pl-form' -%}
+          {%- unless product.has_only_default_variant -%}
+            <div class="pl-field">
+              <label for="variant-{{ section.id }}">{{ 'products.product.variant' | t }}</label>
+              <select id="variant-{{ section.id }}" name="id" data-variant-select>
+                {%- for variant in product.variants -%}
+                  <option
+                    value="{{ variant.id }}"
+                    {% if variant == current_variant %}selected{% endif %}
+                    {% unless variant.available %}disabled{% endunless %}>
+                    {{- variant.title -}}{%- if variant.available == false %} — {{ 'products.product.sold_out' | t }}{%- endif -%}
+                  </option>
+                {%- endfor -%}
+              </select>
+            </div>
+          {%- else -%}
+            <input type="hidden" name="id" value="{{ current_variant.id }}">
+          {%- endunless -%}
+
+          <div class="pl-form-row">
+            <div class="pl-qty">
+              <button type="button" data-qty-minus aria-label="{{ 'products.product.decrease_qty' | t }}">−</button>
+              <input data-qty-input type="text" inputmode="numeric" name="quantity" value="1" min="1" aria-label="{{ 'products.product.quantity' | t }}">
+              <button type="button" data-qty-plus aria-label="{{ 'products.product.increase_qty' | t }}">+</button>
+            </div>
+
+            <button
+              type="submit"
+              name="add"
+              class="btn btn-primary"
+              data-add-to-cart
+              data-variant-id="{{ current_variant.id }}"
+              {% unless current_variant.available %}disabled{% endunless %}>
+              {%- if current_variant.available -%}
+                {{ 'products.product.add_to_cart' | t }}
+              {%- else -%}
+                {{ 'products.product.sold_out' | t }}
+              {%- endif -%}
+            </button>
+          </div>
+        {%- endform -%}
+
+        <div class="pl-reassure">
+          <div>{% render 'icon', icon: 'leaf', size: 18 %}<span>{{ section.settings.reassure_1 }}</span></div>
+          <div>{% render 'icon', icon: 'truck', size: 18 %}<span>{{ section.settings.reassure_2 }}</span></div>
+          <div>{% render 'icon', icon: 'shield', size: 18 %}<span>{{ section.settings.reassure_3 }}</span></div>
+          <div>{% render 'icon', icon: 'heart', size: 18 %}<span>{{ section.settings.reassure_4 }}</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pl-stickybuy">
+    <div class="sp">
+      <b data-product-price>{{ current_variant.price | money }}</b>
+      {%- if current_variant.compare_at_price and current_variant.compare_at_price > current_variant.price -%}
+        <span><s data-product-compare>{{ current_variant.compare_at_price | money }}</s></span>
+      {%- else -%}
+        <span><s data-product-compare style="display:none"></s></span>
+      {%- endif -%}
+    </div>
+    <button type="button" class="btn btn-primary btn-sm" data-add-to-cart data-variant-id="{{ current_variant.id }}" {% unless current_variant.available %}disabled{% endunless %}>
+      {%- if current_variant.available -%}{{ 'products.product.add_to_cart' | t }}{%- else -%}{{ 'products.product.sold_out' | t }}{%- endif -%}
+    </button>
+  </div>
+
+  <script type="application/json" data-product-variants>{{ product.variants | json }}</script>
+</section>
+
+{% schema %}
+{
+  "name": "Main product",
+  "tag": "section",
+  "class": "shopify-section-main-product",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Reassurance icons"
+    },
+    {
+      "type": "text",
+      "id": "reassure_1",
+      "label": "Item 1",
+      "default": "Plant based"
+    },
+    {
+      "type": "text",
+      "id": "reassure_2",
+      "label": "Item 2",
+      "default": "Free shipping over ₹499"
+    },
+    {
+      "type": "text",
+      "id": "reassure_3",
+      "label": "Item 3",
+      "default": "Safe for kids & pets"
+    },
+    {
+      "type": "text",
+      "id": "reassure_4",
+      "label": "Item 4",
+      "default": "Cruelty free"
+    }
+  ]
+}
+{% endschema %}

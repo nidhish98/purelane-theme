@@ -1,0 +1,84 @@
+{%- comment -%}
+  MAIN CART (cart page template). Native Shopify cart form with quantity
+  steppers and checkout button.
+{%- endcomment -%}
+<section class="pl-page sec" data-scene="3">
+  <div class="wrap">
+    <div class="pl-page-head">
+      <h1 class="d2">{{ 'cart.general.title' | t }}</h1>
+    </div>
+
+    <div class="glass pl-cart-wrap">
+      {%- if cart.item_count > 0 -%}
+        {%- form 'cart', cart -%}
+          <div class="pl-cart-rows">
+            {%- for item in cart.items -%}
+              <div class="pl-cart-row">
+                <a class="img" href="{{ item.url }}">
+                  {%- if item.image -%}
+                    <img src="{{ item.image | image_url: width: 200 }}" alt="{{ item.image.alt | default: item.product.title | escape }}" loading="lazy">
+                  {%- else -%}
+                    <span class="tile">{% render 'icon', icon: 'leaf', size: 20 %}</span>
+                  {%- endif -%}
+                </a>
+                <div class="meta">
+                  <a class="title" href="{{ item.url }}"><h4>{{ item.product.title }}</h4></a>
+                  {%- unless item.variant.title == 'Default Title' -%}
+                    <div class="var">{{ item.variant.title }}</div>
+                  {%- endunless -%}
+                  <div class="price">{{ item.final_line_price | money }}</div>
+                </div>
+                <div class="pl-qty" data-line="{{ item.key }}">
+                  <button type="button" data-qty-minus aria-label="{{ 'cart.general.decrease_qty' | t }}">−</button>
+                  <input type="text" inputmode="numeric" name="updates[]" value="{{ item.quantity }}" min="1" aria-label="{{ 'cart.general.quantity' | t }}" data-qty-input>
+                  <button type="button" data-qty-plus aria-label="{{ 'cart.general.increase_qty' | t }}">+</button>
+                </div>
+                <a class="remove" href="{{ item.url_to_remove }}" aria-label="{{ 'cart.general.remove' | t }}">×</a>
+              </div>
+            {%- endfor -%}
+          </div>
+
+          <div class="pl-cart-foot">
+            <div class="subtotal">
+              <span>{{ 'cart.general.subtotal' | t }}</span>
+              <strong>{{ cart.items_subtotal_price | money }}</strong>
+            </div>
+            <p class="note">{{ 'cart.general.shipping_note' | t }}</p>
+            <div class="actions">
+              <button type="submit" name="update" class="btn btn-ghost btn-sm">{{ 'cart.general.update' | t }}</button>
+              <button type="submit" name="checkout" class="btn btn-primary">{{ 'cart.general.checkout' | t }}</button>
+            </div>
+          </div>
+        {%- endform -%}
+
+        {%- javascript -%}
+          (() => {
+            const wrap = document.querySelector('.pl-cart-rows');
+            if (!wrap) return;
+            wrap.addEventListener('click', (e) => {
+              const b = e.target.closest('[data-qty-minus],[data-qty-plus]');
+              if (!b) return;
+              const input = b.parentNode.querySelector('[data-qty-input]');
+              if (!input) return;
+              const step = b.hasAttribute('data-qty-minus') ? -1 : 1;
+              input.value = Math.max(1, (parseInt(input.value, 10) || 1) + step);
+            });
+          })();
+        {%- endjavascript -%}
+      {%- else -%}
+        <div class="pl-empty">
+          <h3>{{ 'cart.general.empty' | t }}</h3>
+          <a class="btn btn-primary" href="{{ routes.all_products_collection_url }}">{{ 'cart.general.continue_browsing' | t }}</a>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Main cart",
+  "tag": "section",
+  "class": "shopify-section-main-cart"
+}
+{% endschema %}

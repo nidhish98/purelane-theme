@@ -1,0 +1,71 @@
+{%- comment -%}
+  TRUST BAR (secondary). One block per promise. Text supports two lines.
+{%- endcomment -%}
+<section class="sec" data-scene="{{ section.settings.scene | default: 4 }}">
+  <div class="wrap">
+    <div class="glass trust rv">
+      {%- for block in section.blocks -%}
+        <div class="trust-i" {{ block.shopify_attributes }}>
+          {% render 'icon', icon: block.settings.icon, size: 26, stroke: 1.5 %}
+          <span>{{ block.settings.text | escape | newline_to_br }}</span>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Trust bar",
+  "tag": "section",
+  "class": "shopify-section-trust-bar",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "scene",
+      "label": "Background scene",
+      "options": [
+        { "value": "1", "label": "1 — lightest" },
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4 — deepest" }
+      ],
+      "default": "4"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "promise",
+      "name": "Promise",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "leaf", "label": "Leaf" },
+            { "value": "box", "label": "Recyclable box" },
+            { "value": "heart", "label": "Heart" },
+            { "value": "globe", "label": "Globe" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "truck", "label": "Truck" },
+            { "value": "check-square", "label": "Check square" }
+          ],
+          "default": "leaf"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text",
+          "info": "One line per row.",
+          "default": "Plant derived\nformulas"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

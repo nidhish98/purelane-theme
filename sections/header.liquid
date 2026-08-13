@@ -1,0 +1,99 @@
+{%- comment -%}
+  Floating pill navigation (prototype `.navpill`).
+  Links come from a Shopify menu so anchors and pages are merchant-managed.
+  Includes the cart icon (with live bubble), search / account links and a
+  mobile slide-in menu.
+{%- endcomment -%}
+{%- liquid
+  assign menu = section.settings.menu
+  assign brand_name = section.settings.brand_name | default: shop.name
+-%}
+<header id="pl-header" data-pl-header>
+  <div class="navpill glass">
+    <a class="brand" href="{{ routes.root_url }}" aria-label="{{ 'general.menu' | t }} — {{ brand_name | escape }}">
+      <span class="mark">
+        {% render 'icon', icon: 'leaf-stem', size: 23, stroke: 1.5 %}
+      </span>
+      <span class="txt">
+        <span class="n1">{{ brand_name | escape }}</span>
+        <span class="n2">{{ section.settings.brand_tagline | escape }}</span>
+      </span>
+    </a>
+
+    {%- if menu != blank -%}
+      <nav class="nav" aria-label="Main">
+        {%- for link in menu.links -%}
+          <a href="{{ link.url }}">{{ link.title | escape }}</a>
+        {%- endfor -%}
+      </nav>
+    {%- endif -%}
+
+    <div class="navtools">
+      <a class="ico hide-s" href="{{ routes.search_url }}" aria-label="{{ 'general.search' | t }}">
+        {% render 'icon', icon: 'search', size: 18, stroke: 1.7 %}
+      </a>
+      <a class="ico hide-s" href="{{ routes.account_url }}" aria-label="{{ 'customer.account' | default: 'Account' }}">
+        {% render 'icon', icon: 'account', size: 18, stroke: 1.7 %}
+      </a>
+      <button class="ico" type="button" data-cart-open aria-label="{{ 'accessibility.cart' | t }}">
+        {% render 'icon', icon: 'cart', size: 18, stroke: 1.7 %}
+        <span class="dot" data-cart-bubble aria-hidden="true">0</span>
+      </button>
+      <button class="ico burger" type="button" data-menu-toggle aria-label="{{ 'general.menu' | t }}">
+        {% render 'icon', icon: 'menu', size: 18, stroke: 1.8 %}
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="drawer-menu" data-menu-drawer role="dialog" aria-modal="true" aria-label="{{ 'general.menu' | t }}">
+  <div class="navtools" style="margin-left:0;margin-bottom:14px">
+    <button class="ico" type="button" data-menu-close aria-label="{{ 'accessibility.close_menu' | t }}">
+      {% render 'icon', icon: 'close', size: 18, stroke: 1.8 %}
+    </button>
+  </div>
+  {%- if menu != blank -%}
+    <nav aria-label="Main">
+      {%- for link in menu.links -%}
+        <a href="{{ link.url }}">{{ link.title | escape }}</a>
+      {%- endfor -%}
+    </nav>
+  {%- endif -%}
+  <div class="dm-tools">
+    <a class="btn btn-ghost" href="{{ routes.search_url }}">{{ 'general.search' | t }}</a>
+    <a class="btn btn-ghost" href="{{ routes.account_url }}">{{ 'customer.account' | default: 'Account' }}</a>
+    <button class="btn btn-primary" type="button" data-cart-open>{{ 'accessibility.cart' | t }}</button>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Header",
+  "tag": "section",
+  "class": "shopify-section-header",
+  "settings": [
+    {
+      "type": "text",
+      "id": "brand_name",
+      "label": "Brand name",
+      "info": "Defaults to your store name when left empty."
+    },
+    {
+      "type": "text",
+      "id": "brand_tagline",
+      "label": "Brand tagline",
+      "default": "Clean, simply"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu",
+      "info": "Create a menu with anchor links (e.g. #shop, #bundles) for the one-page layout."
+    }
+  ],
+  "enabled_on": {
+    "groups": ["header"]
+  }
+}
+{% endschema %}

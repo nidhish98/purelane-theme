@@ -1,0 +1,160 @@
+{%- comment -%}
+  REVIEWS RAIL (priority section 5).
+  Auto-scrolling marquee of review cards. Each card is one block.
+  Review content is merchant-editable (no native Shopify review fields
+  without an app). Cards are rendered twice so the CSS -50% loop is seamless;
+  the duplicated copy is hidden from assistive tech.
+{%- endcomment -%}
+<section id="{{ section.settings.anchor_id | escape }}" class="sec revband" data-scene="{{ section.settings.scene | default: 1 }}">
+  <div class="wrap">
+    <div class="revhead rv">
+      {%- if section.settings.kicker != blank -%}
+        <span class="kicker">{{ section.settings.kicker | escape }}</span>
+      {%- endif -%}
+      {%- if section.settings.rating_value != blank and section.settings.rating_count != blank -%}
+        <span class="agg">
+          <span class="st">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+          <b>{{ section.settings.rating_value | escape }}</b>
+          {{ section.settings.rating_count | escape }}
+        </span>
+      {%- endif -%}
+      {%- if section.settings.homes_text != blank -%}
+        <span class="agg">{{ section.settings.homes_text | escape }}</span>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- if section.blocks.size > 0 -%}
+    <div class="revrail rv" aria-label="{{ section.settings.rail_label | escape }}">
+      <div class="revtrack">
+        {%- for render_index in (1..2) -%}
+          {%- for block in section.blocks -%}
+            <article class="glass-2 rcard"{% if render_index == 2 %} aria-hidden="true"{% endif %} {{ block.shopify_attributes }}>
+              <div class="st">
+                {%- for s in (1..block.settings.rating) -%}&#9733;{%- endfor -%}
+              </div>
+              {%- if block.settings.title != blank -%}
+                <h5>{{ block.settings.title | escape }}</h5>
+              {%- endif -%}
+              {%- if block.settings.body != blank -%}
+                <p>{{ block.settings.body | escape }}</p>
+              {%- endif -%}
+              <div class="who">
+                {% render 'icon', icon: 'check', size: 12, stroke: 3 %}
+                <b>{{ block.settings.name | escape }}</b>
+                {%- if block.settings.product != blank -%}<span>&middot; {{ block.settings.product | escape }}</span>{%- endif -%}
+              </div>
+            </article>
+          {%- endfor -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Reviews rail",
+  "tag": "section",
+  "class": "shopify-section-reviews-rail",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "anchor_id",
+      "label": "Anchor id",
+      "default": "reviews"
+    },
+    {
+      "type": "select",
+      "id": "scene",
+      "label": "Background scene",
+      "options": [
+        { "value": "1", "label": "1 — lightest" },
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4 — deepest" }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Kicker",
+      "default": "That's what they said"
+    },
+    {
+      "type": "text",
+      "id": "rating_value",
+      "label": "Aggregate rating",
+      "default": "4.8"
+    },
+    {
+      "type": "text",
+      "id": "rating_count",
+      "label": "Rating count text",
+      "default": "from 8,000+ reviews"
+    },
+    {
+      "type": "text",
+      "id": "homes_text",
+      "label": "Second stat",
+      "default": "Loved by 12 lakh+ homes"
+    },
+    {
+      "type": "text",
+      "id": "rail_label",
+      "label": "Marquee accessibility label",
+      "default": "Customer reviews"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "limit": 12,
+      "settings": [
+        {
+          "type": "select",
+          "id": "rating",
+          "label": "Star rating",
+          "options": [
+            { "value": "1", "label": "1 star" },
+            { "value": "2", "label": "2 stars" },
+            { "value": "3", "label": "3 stars" },
+            { "value": "4", "label": "4 stars" },
+            { "value": "5", "label": "5 stars" }
+          ],
+          "default": "5"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Works like a charm"
+        },
+        {
+          "type": "textarea",
+          "id": "body",
+          "label": "Review text",
+          "default": "Finally an eco option that cleans as well as the chemical detergent I used for years, and it smells better."
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "Anita"
+        },
+        {
+          "type": "text",
+          "id": "product",
+          "label": "Purchased product",
+          "default": "Laundry detergent"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
