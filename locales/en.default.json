@@ -1,0 +1,77 @@
+{
+  "general": {
+    "search": "Search",
+    "close": "Close",
+    "menu": "Menu",
+    "breadcrumbs": {
+      "home": "Home"
+    },
+    "pagination": {
+      "label": "Pagination"
+    }
+  },
+  "accessibility": {
+    "skip_to_text": "Skip to content",
+    "close_menu": "Close menu",
+    "close_cart": "Close cart",
+    "cart": "Cart"
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Add to cart",
+      "sold_out": "Sold out",
+      "unavailable": "Unavailable",
+      "no_image": "No image",
+      "reviews": "reviews",
+      "from_price": "From",
+      "quantity": "Quantity",
+      "variant": "Variant",
+      "decrease_qty": "Decrease quantity",
+      "increase_qty": "Increase quantity",
+      "save_on": "Save on"
+    }
+  },
+  "cart": {
+    "title": "Your cart",
+    "empty": "Your cart is empty",
+    "subtotal": "Subtotal",
+    "checkout": "Checkout",
+    "note": "Taxes and shipping calculated at checkout",
+    "remove": "Remove",
+    "general": {
+      "title": "Your cart",
+      "empty": "Your cart is empty",
+      "subtotal": "Subtotal",
+      "checkout": "Checkout",
+      "quantity": "Quantity",
+      "decrease_qty": "Decrease quantity",
+      "increase_qty": "Increase quantity",
+      "remove": "Remove",
+      "shipping_note": "Taxes and shipping calculated at checkout",
+      "update": "Update",
+      "continue_browsing": "Continue browsing"
+    }
+  },
+  "collections": {
+    "general": {
+      "view_all": "View all",
+      "empty": "No products in this collection yet.",
+      "items_count": {
+        "other": "{{ count }} products"
+      }
+    }
+  },
+  "newsletter": {
+    "placeholder": "your@email.com",
+    "success": "Thanks — you're on the list.",
+    "error": "Something went wrong. Please try again."
+  },
+  "footer": {
+    "copyright": "Purelane Eco Products Private Limited"
+  },
+  "404": {
+    "title": "Page not found",
+    "subtext": "The page you were looking for doesn't exist.",
+    "link": "Back home"
+  }
+}

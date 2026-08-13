@@ -1,0 +1,108 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="{{ settings.color_theme_color | default: '#eee7fb' }}">
+  <link rel="canonical" href="{{ canonical_url }}">
+  <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+
+  {%- if page_description -%}
+    <meta name="description" content="{{ page_description | escape }}">
+  {%- endif -%}
+
+  <title>{{ page_title | escape }}</title>
+
+  {%- comment -%}
+    Brand type: Outfit (display) + Inter (body), matching the prototype.
+    Inter is fetched with &display=swap so it never blocks render.
+  {%- endcomment -%}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  {{ content_for_header }}
+
+  {%- style -%}
+    :root{
+      --ink: {{ settings.color_background | default: '#f4f0fb' }};
+      --paper: {{ settings.color_paper | default: '#241a3d' }};
+      --surface: {{ settings.color_surface | default: '#17102b' }};
+      --brand: {{ settings.color_brand | default: '#4b3a8f' }};
+      --accent: {{ settings.color_accent | default: '#b8701c' }};
+      --leaf: {{ settings.color_leaf | default: '#4f7d10' }};
+    }
+  {%- endstyle -%}
+
+  {{ 'base.css' | asset_url | stylesheet_tag }}
+
+  <script src="{{ 'global.js' | asset_url }}" defer></script>
+</head>
+
+<body class="template-{{ template.name | handle }}">
+  <a class="skip-to-content-link button visually-hidden" href="#MainContent">
+    {{ 'accessibility.skip_to_text' | t }}
+  </a>
+
+  {%- comment -%}
+    Fixed scene background. Lives in theme.liquid so it is present on every
+    template; section-level `data-scene` attributes drive which gradient shows.
+  {%- endcomment -%}
+  {%- if settings.enable_scene_effects -%}
+    <div class="pl-scenes" id="pl-scenes" data-d="1" aria-hidden="true">
+      <div class="pl-scene s1 on"></div>
+      <div class="pl-scene s2"></div>
+      <div class="pl-scene s3"></div>
+      <div class="pl-scene s4"></div>
+      {%- if settings.enable_water_effect -%}
+        <div class="pl-water">
+          <div class="wl wl-c" aria-hidden="true">
+            <svg class="sv" viewBox="0 0 1800 1100" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="sg-pl" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#f4fff9" stop-opacity=".85"/>
+                  <stop offset=".38" stop-color="#dcf6e7" stop-opacity=".28"/>
+                  <stop offset="1" stop-color="#d4f2e2" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <g>
+                <polygon points="95,-80 152,-80 517,1180 439,1180" fill="url(#sg-pl)" opacity="0.26"/>
+                <polygon points="433,-80 491,-80 885,1180 807,1180" fill="url(#sg-pl)" opacity="0.41"/>
+                <polygon points="751,-80 919,-80 1180,1180 953,1180" fill="url(#sg-pl)" opacity="0.31"/>
+                <polygon points="1048,-80 1135,-80 1400,1180 1282,1180" fill="url(#sg-pl)" opacity="0.28"/>
+                <polygon points="1366,-80 1520,-80 1898,1180 1690,1180" fill="url(#sg-pl)" opacity="0.28"/>
+                <polygon points="1695,-80 1808,-80 2067,1180 1914,1180" fill="url(#sg-pl)" opacity="0.35"/>
+              </g>
+            </svg>
+          </div>
+          <div class="wl wl-s" aria-hidden="true">
+            <svg class="sv" viewBox="0 0 1800 1100" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="sf-pl" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#ffffff" stop-opacity=".55"/>
+                  <stop offset=".55" stop-color="#e8fff2" stop-opacity=".16"/>
+                  <stop offset="1" stop-color="#e8fff2" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <rect x="-100" y="-40" width="2000" height="150" fill="url(#sf-pl)"/>
+              <rect x="-100" y="60" width="2000" height="60" fill="url(#sf-pl)" opacity=".5"/>
+            </svg>
+          </div>
+        </div>
+      {%- endif -%}
+      <div class="vig"></div>
+    </div>
+  {%- endif -%}
+
+  {% sections 'header-group' %}
+
+  <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
+    {{ content_for_layout }}
+  </main>
+
+  {% sections 'footer-group' %}
+
+  <div id="overlay" class="overlay" hidden></div>
+</body>
+</html>
