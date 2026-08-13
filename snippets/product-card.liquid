@@ -1,0 +1,63 @@
+{%- comment -%}
+  Reusable product card (prototype `.card`).
+  Handles naturally via Shopify data:
+    - normal product
+    - sold-out product   (button disabled + "Sold out" pill)
+    - product with no image (brand placeholder)
+    - very long titles   (2-line clamp)
+    - missing optional data (rating / compare-at / discount)
+  Pills are driven by product tags: best-seller / top-rated / new.
+  Rating + review count come from product metafields (custom.rating,
+  custom.reviews_count) and are simply omitted when not set.
+  Usage: {% render 'product-card', product: product, delay: 2 %}
+{%- endcomment -%}
+{%- liquid
+  assign available = product.available
+  assign first_variant = product.selected_or_first_available_variant | default: product.variants.first
+  assign badge = ''
+  if product.tags contains 'best-seller'
+    assign badge = 'Best seller'
+  elsif product.tags contains 'top-rated'
+    assign badge = 'Top rated'
+  elsif product.tags contains 'new'
+    assign badge = 'New'
+  endif
+  assign rating = product.metafields.custom.rating.value
+  assign reviews = product.metafields.custom.reviews_count.value
+  assign img_alt = product.featured_image.alt | default: product.title | escape
+-%}
+<article class="glass card pl-card rv{% if delay and delay > 0 %} rv-d{{ delay }}{% endif %}">
+  <a class="shot" href="{{ product.url }}">
+    {%- if product.featured_image -%}
+      {{ product.featured_image | image_url: width: 440 | image_tag: loading: 'lazy', class: 'pimg', alt: img_alt }}
+    {%- else -%}
+      <span class="pl-ph">
+        {% render 'icon', icon: 'leaf', size: 56 %}
+        <span>{{ 'products.product.no_image' | t }}</span>
+      </span>
+    {%- endif -%}
+    {%- if badge != blank -%}
+      <span class="pill">{{ badge | escape }}</span>
+    {%- endif -%}
+    {%- unless available -%}
+      <span class="pill pill-sold">{{ 'products.product.sold_out' | t }}</span>
+    {%- endunless -%}
+  </a>
+
+  <h4><a href="{{ product.url }}">{{ product.title | escape }}</a></h4>
+
+  {%- if rating and reviews -%}
+    <div class="rate"><b>&#9733; {{ rating | escape }}</b> &middot; {{ reviews | escape }} {{ 'products.product.reviews' | t }}</div>
+  {%- endif -%}
+
+  {% render 'price', product: product, show_label: true %}
+
+  <button
+    type="button"
+    class="btn btn-ghost btn-sm pl-card-cta"
+    data-add-to-cart
+    data-variant-id="{{ first_variant.id }}"
+    {% unless available %}disabled{% endunless %}>
+    {%- if available -%}{{ 'products.product.add_to_cart' | t }}{%- else -%}{{ 'products.product.sold_out' | t }}{%- endif -%}
+  </button>
+</article>

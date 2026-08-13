@@ -1,0 +1,13 @@
+{%- comment -%}
+  Reusable panel heading (prototype `.panel-head`): kicker + heading +
+  leaf rule + lede. Usage:
+    {% render 'section-heading', kicker: s.kicker, heading: s.heading, lede: s.lede, rule: true, reveal: true %}
+{%- endcomment -%}
+<div class="panel-head{% if reveal != false %} rv{% endif %}">
+  {%- if kicker != blank -%}<span class="kicker">{{ kicker | escape }}</span>{%- endif -%}
+  {%- if heading != blank -%}<h2 class="d2" style="margin-top:12px">{{ heading | escape | newline_to_br }}</h2>{%- endif -%}
+  {%- if rule != false -%}
+    <div class="rule"><i></i>{% render 'icon', icon: 'leaf', size: 16 %}<i></i></div>
+  {%- endif -%}
+  {%- if lede != blank -%}<p class="lede" style="margin:14px auto 0">{{ lede | escape }}</p>{%- endif -%}
+</div>
