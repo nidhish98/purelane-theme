@@ -50,21 +50,6 @@
             </div>
           </div>
         {%- endform -%}
-
-        {%- javascript -%}
-          (() => {
-            const wrap = document.querySelector('.pl-cart-rows');
-            if (!wrap) return;
-            wrap.addEventListener('click', (e) => {
-              const b = e.target.closest('[data-qty-minus],[data-qty-plus]');
-              if (!b) return;
-              const input = b.parentNode.querySelector('[data-qty-input]');
-              if (!input) return;
-              const step = b.hasAttribute('data-qty-minus') ? -1 : 1;
-              input.value = Math.max(1, (parseInt(input.value, 10) || 1) + step);
-            });
-          })();
-        {%- endjavascript -%}
       {%- else -%}
         <div class="pl-empty">
           <h3>{{ 'cart.general.empty' | t }}</h3>
@@ -74,6 +59,21 @@
     </div>
   </div>
 </section>
+
+{%- javascript -%}
+  (() => {
+    const wrap = document.querySelector('.pl-cart-rows');
+    if (!wrap) return;
+    wrap.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-qty-minus],[data-qty-plus]');
+      if (!b) return;
+      const input = b.parentNode.querySelector('[data-qty-input]');
+      if (!input) return;
+      const step = b.hasAttribute('data-qty-minus') ? -1 : 1;
+      input.value = Math.max(1, (parseInt(input.value, 10) || 1) + step);
+    });
+  })();
+{%- endjavascript -%}
 
 {% schema %}
 {
