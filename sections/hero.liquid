@@ -91,9 +91,15 @@
                 assign p2 = block.settings.product_2
                 assign p3 = block.settings.product_3
                 assign n = 0
-                if p1 != blank %}{% assign n = n | plus: 1 %}{% endif
-                if p2 != blank %}{% assign n = n | plus: 1 %}{% endif
-                if p3 != blank %}{% assign n = n | plus: 1 %}{% endif
+                if p1 != blank
+                  assign n = n | plus: 1
+                endif
+                if p2 != blank
+                  assign n = n | plus: 1
+                endif
+                if p3 != blank
+                  assign n = n | plus: 1
+                endif
                 assign slide_price = block.settings.price
                 assign slide_compare = block.settings.compare_at_price
                 if slide_price == blank and n == 1 and p1 != blank
