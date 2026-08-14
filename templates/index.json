@@ -35,9 +35,12 @@
           "type": "slide",
           "settings": {
             "label": "Single bottle",
-            "price": "₹169",
-            "compare_at_price": "₹254",
-            "cut_label": "33% off"
+            "price": "",
+            "compare_at_price": "",
+            "cut_label": "33% off",
+            "product_1": 9008884416591,
+            "product_2": "",
+            "product_3": ""
           }
         },
         "slide-2": {
@@ -46,7 +49,10 @@
             "label": "2-bottle set",
             "price": "₹299",
             "compare_at_price": "₹508",
-            "cut_label": "41% off"
+            "cut_label": "41% off",
+            "product_1": 9008884416591,
+            "product_2": 9008884449359,
+            "product_3": ""
           }
         },
         "slide-3": {
@@ -55,7 +61,10 @@
             "label": "Whole-home kit",
             "price": "₹499",
             "compare_at_price": "₹897",
-            "cut_label": "44% off"
+            "cut_label": "44% off",
+            "product_1": 9008884416591,
+            "product_2": 9008884449359,
+            "product_3": 9008884482127
           }
         }
       },
@@ -292,8 +301,11 @@
             "title": "Kitchen essentials",
             "count_label": "3 products",
             "description": "Includes: dishwash gel, floor cleaner and handwash. Everything for a sparkling kitchen, no need to pick separately.",
+            "product_1": 9008884580431,
             "product_1_label": "Dishwash gel",
+            "product_2": 9008884547663,
             "product_2_label": "Floor cleaner",
+            "product_3": "",
             "product_3_label": "Liquid handwash",
             "price": "₹499",
             "compare_at_price": "₹897",
@@ -309,7 +321,9 @@
             "title": "Laundry care bundle",
             "count_label": "2 products",
             "description": "Fresh clothes, softer fabric. Detergent and conditioner in one box.",
+            "product_1": 9008884449359,
             "product_1_label": "Laundry detergent",
+            "product_2": 9008884645967,
             "product_2_label": "Fabric conditioner",
             "price": "₹499",
             "compare_at_price": "₹947",
@@ -324,8 +338,11 @@
             "title": "Bathroom deep clean",
             "count_label": "3 products",
             "description": "Taps, tiles and showers. Everything to make the bathroom sparkle.",
+            "product_1": 9008884613199,
             "product_1_label": "Tap cleaner",
+            "product_2": 9008884482127,
             "product_2_label": "Bathroom cleaner",
+            "product_3": 9008884547663,
             "product_3_label": "Floor cleaner",
             "price": "₹499",
             "compare_at_price": "₹897",
@@ -340,7 +357,9 @@
             "title": "Hard water solution",
             "count_label": "2 products",
             "description": "Beats mineral build-up on taps and in the loo.",
+            "product_1": 9008884613199,
             "product_1_label": "Tap cleaner",
+            "product_2": 9008884482127,
             "product_2_label": "Toilet cleaner",
             "price": "₹349",
             "compare_at_price": "₹598",
