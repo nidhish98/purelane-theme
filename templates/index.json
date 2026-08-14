@@ -420,7 +420,11 @@
         "anchor_id": "shop",
         "scene": "3",
         "kicker": "Shop by need",
-        "heading": "The everyday essentials"
+        "heading": "The everyday essentials",
+        "collection": 316551200847,
+        "products_to_show": 8,
+        "show_button": true,
+        "button_label": "View all"
       }
     },
     "range": {
